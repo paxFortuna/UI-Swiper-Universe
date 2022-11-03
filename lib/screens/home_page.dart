@@ -12,6 +12,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  int pageIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +33,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.all(32.0),
                 child: Column(
-                  children: <Widget>[
+                  children: [
                     const Text(
                       'Explore',
                       style: TextStyle(
@@ -57,6 +60,21 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                       onChanged: (value) {},
+                      onTap: () {
+                        setState(() {
+                          const SnackBar snackBar = SnackBar(
+                            content: Text(
+                              '비어 있어요',
+                              style: TextStyle(
+                                fontSize: 24,
+                              ),
+                            ),
+                            duration: Duration(seconds: 5),
+                            backgroundColor: Colors.deepPurple,
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        });
+                      },
                       icon: Padding(
                         padding: const EdgeInsets.only(left: 16.0),
                         child: Image.asset('assets/drop_down_icon.png'),
@@ -66,91 +84,103 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              Container(
-                height: 500,
-                padding: const EdgeInsets.only(left: 32),
-                child: Swiper(
-                  itemCount: planets.length,
-                  itemWidth: MediaQuery.of(context).size.width - 2 * 64,
-                  layout: SwiperLayout.STACK,
-                  pagination: const SwiperPagination(
-                    builder:
-                    DotSwiperPaginationBuilder(activeSize: 20, space: 8),
-                  ),
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (context, a, b) => DetailPage(
-                              planetInfo: planets[index],
-                            ),
-                          ),
-                        );
-                      },
-                      child: Stack(
-                        children: <Widget>[
-                          Column(
-                            children: <Widget>[
-                              const SizedBox(height: 100),
-                              Card(
-                                elevation: 8,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(32),
-                                ),
-                                color: Colors.white,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(32.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      const SizedBox(height: 100),
-                                      Text(
-                                        planets[index].name,
-                                        style: const TextStyle(
-                                          fontFamily: 'Avenir',
-                                          fontSize: 44,
-                                          color: Color(0xff47455f),
-                                          fontWeight: FontWeight.w900,
-                                        ),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                      Text(
-                                        'Solar System',
-                                        style: TextStyle(
-                                          fontFamily: 'Avenir',
-                                          fontSize: 23,
-                                          color: primaryTextColor,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                      const SizedBox(height: 32),
-                                      Row(
-                                        children: <Widget>[
+              Expanded(
+                child: Container(
+                  height: 500,
+                  padding: const EdgeInsets.only(left: 32),
+                  child: Swiper(
+                    itemCount: planets.length,
+                    itemWidth: MediaQuery.of(context).size.width - 2 * 64,
+                    layout: SwiperLayout.STACK,
+                    onIndexChanged: (value) {
+                      pageIndex = value;
+                    },
+                    // 이미지 하단: dot 페이지 indicators
+                    pagination: const SwiperPagination(
+                      builder: DotSwiperPaginationBuilder(
+                        activeSize: 20,
+                        space: 8,
+                      ),
+                    ),
+                    // page swiper action
+                    itemBuilder: (context, index) {
+                      return Stack(
+                        children: [
+                          // land_scape render_overflow 차단
+                          SingleChildScrollView(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, a, b) => DetailPage(
+                                      planetInfo: planets[index],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 100),
+                                  Card(
+                                    elevation: 8,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(32),
+                                    ),
+                                    color: Colors.white,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(32.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 100),
                                           Text(
-                                            'Know more',
+                                            planets[index].name,
+                                            style: const TextStyle(
+                                              fontFamily: 'Avenir',
+                                              fontSize: 44,
+                                              color: Color(0xff47455f),
+                                              fontWeight: FontWeight.w900,
+                                            ),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                          Text(
+                                            'Solar System',
                                             style: TextStyle(
                                               fontFamily: 'Avenir',
-                                              fontSize: 18,
-                                              color: secondaryTextColor,
+                                              fontSize: 23,
+                                              color: primaryTextColor,
                                               fontWeight: FontWeight.w500,
                                             ),
                                             textAlign: TextAlign.left,
                                           ),
-                                          Icon(
-                                            Icons.arrow_forward,
-                                            color: secondaryTextColor,
+                                          const SizedBox(height: 32),
+                                          Row(
+                                            children: <Widget>[
+                                              Text(
+                                                'Know more',
+                                                style: TextStyle(
+                                                  fontFamily: 'Avenir',
+                                                  fontSize: 18,
+                                                  color: secondaryTextColor,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                                textAlign: TextAlign.left,
+                                              ),
+                                              Icon(
+                                                Icons.arrow_forward,
+                                                color: secondaryTextColor,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                           Hero(
                             tag: planets[index].position,
@@ -171,9 +201,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ],
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -193,7 +223,8 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             IconButton(
               icon: Image.asset('assets/menu_icon.png'),
-              onPressed: () {},
+              onPressed: () {
+              },
             ),
             IconButton(
               icon: Image.asset('assets/search_icon.png'),
