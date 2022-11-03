@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import 'package:ui_swiper_universe/constants.dart';
 import 'package:ui_swiper_universe/data/data.dart';
 import 'package:ui_swiper_universe/screens/detail_screen.dart';
@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                             pageBuilder: (context, a, b) => DetailPage(
                               planetInfo: planets[index],
                             ),
-                          ),s
+                          ),
                         );
                       },
                       child: Stack(
